@@ -50,3 +50,70 @@ resource "aws_route_table_association" "public" {
   subnet_id      = element(aws_subnet.public_subnet.*.id, count.index)
   route_table_id = element(aws_route_table.public.*.id, count.index)
 }
+
+resource "aws_security_group" "external_access" {
+  name        = "${var.environment}-external_access-sg"
+  description = "Security group to handle external access"
+  vpc_id      = aws_vpc.vpc.id
+  depends_on  = [aws_vpc.vpc]
+
+  ingress {
+    from_port     = 22
+    to_port       = 22
+    protocol      = "TCP"
+    description   = "SSH Access"
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    from_port     = 80
+    to_port       = 80
+    protocol      = "TCP"
+    description   = "HTTP Access"
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    from_port     = 443
+    to_port       = 443
+    protocol      = "TCP"
+    description   = "HTTPS Access"
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  tags = {
+    Name        = "External Access"
+    Environment = var.environment
+  }
+}
+
+resource "aws_security_group" "default" {
+  name        = "${var.environment}-default-sg"
+  description = "Default security group"
+  vpc_id      = aws_vpc.vpc.id
+  depends_on  = [aws_vpc.vpc]
+
+  ingress {
+    from_port     = 0
+    to_port       = 0
+    protocol      = "-1"
+    description   = "All Ingress Access between this security group"
+    self          = true   
+  }
+
+  egress {
+    from_port     = 0
+    to_port       = 0
+    protocol      = "-1"
+    description   = "All External Access"
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name        = "Default"
+    Environment = var.environment
+  }
+}
