@@ -9,3 +9,7 @@ variable "access_key" {
 variable "secret_key" {
   description = "The secret key from the user used to manage resources"
 }
+
+variable "public_key" {
+  description = "the Public key that will be registered with AWS to allow logging-in to EC2 Instances"
+}
