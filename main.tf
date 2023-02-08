@@ -22,6 +22,7 @@ locals {
     default = {
       environment            = terraform.workspace    
       availability_zones   = ["${var.region}a", "${var.region}b"]
+      cluster_nodes         = ["k8s-1", "k8s-2", "k8s-3"]
     }
     dev = {
       vpc_cidr             = "192.168.0.0/24"
@@ -48,4 +49,17 @@ module "networking" {
   availability_zones    = local.workspace["availability_zones"]
   vpc_cidr              = local.workspace["vpc_cidr"]
   public_subnets_cidr   = local.workspace["public_subnets_cidr"]
+}
+
+module "ec2" {
+  source                  = "./modules/ec2"
+  environment             = terraform.workspace
+  region                  = var.region
+  cluster_nodes           = local.workspace["cluster_nodes"]
+  public_key              = var.public_key 
+  subnet                  = element(module.networking.subnets, 0)  
+  ec2_security_group_ids  = [
+    module.networking.default_sg.id,
+    module.networking.external_access_sg.id
+  ]
 }
