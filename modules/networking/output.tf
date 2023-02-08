@@ -5,3 +5,7 @@ output "external_access_sg" {
 output "default_sg" {
   value = aws_security_group.default
 }
+
+output "subnets" {
+  value = aws_subnet.public_subnet
+}
