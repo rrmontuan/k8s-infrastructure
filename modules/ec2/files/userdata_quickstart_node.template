@@ -1,0 +1,13 @@
+#!/bin/bash -x
+
+sudo su
+curl https://releases.rancher.com/install-docker/20.10.sh | sh
+usermod -aG docker ubuntu
+
+TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+
+publicIP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/public-ipv4)
+privateIP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/local-ipv4)
+instanceName=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/tags/instance/Name)
+
+${register_command} --address $publicIP --internal-address $privateIP --node-name $instanceName --etcd --controlplane --worker

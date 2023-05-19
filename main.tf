@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.16"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "3.4.0"
+    }
   }
 
   required_version = ">= 1.2.0"
@@ -52,14 +56,28 @@ module "networking" {
 }
 
 module "ec2" {
-  source                  = "./modules/ec2"
-  environment             = terraform.workspace
-  region                  = var.region
-  cluster_nodes           = local.workspace["cluster_nodes"]
-  public_key              = var.public_key 
-  subnet                  = element(module.networking.subnets, 0)  
+  source                              = "./modules/ec2"
+  environment                         = terraform.workspace
+  region                              = var.region
+  cluster_nodes                       = local.workspace["cluster_nodes"]
+  public_key                          = var.public_key 
+  subnet                              = element(module.networking.subnets, 0)  
+  domain                              = module.dns.rancher_dns
+  rancher_server_admin_password       = var.rancher_server_admin_password
+  rancher_version                     = var.rancher_version
+  aws_route_table_association         = element(module.networking.aws_route_table_association, 0)
   ec2_security_group_ids  = [
     module.networking.default_sg.id,
     module.networking.external_access_sg.id
   ]
 }
+
+module "dns" {
+  source                  = "./modules/dns"
+  environment             = terraform.workspace
+  region                  = var.region
+  domain                  = var.domain
+  server_public_ip        = module.ec2.server_public_ip
+  nodes_public_ips        = module.ec2.nodes_public_ips
+}
+

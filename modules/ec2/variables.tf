@@ -21,3 +21,27 @@ variable "public_key" {
 variable "subnet" {
   description = "The subnet where the EC2 instances will be created"
 }
+
+variable "rancher_server_admin_password" {
+  type        = string
+  description = "Admin password to use for Rancher server bootstrap, min. 12 characters"
+}
+
+variable "rancher_version" {
+  type        = string
+  description = "Rancher server version (format 0.0.0)"
+}
+
+# Required
+variable "domain" {
+  type        = string
+  description = "DNS host name of the Rancher server"
+}
+
+variable "aws_route_table_association" {
+  description = "AWS Route Table Association"
+}
+
+locals {
+  node_username = "ubuntu"
+}

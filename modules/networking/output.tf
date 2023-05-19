@@ -9,3 +9,7 @@ output "default_sg" {
 output "subnets" {
   value = aws_subnet.public_subnet
 }
+
+output "aws_route_table_association" {
+  value = aws_route_table_association.public
+}
