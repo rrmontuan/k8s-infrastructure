@@ -32,18 +32,23 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.vpc.id
   count  = length(var.public_subnets_cidr)
 
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.ig.id
+  }
+
   tags = {
     Name        = "${var.environment}-public-route-table-${count.index}"
     Environment = var.environment
   }
 }
 
-resource "aws_route" "public_internet_gateway" {
-  route_table_id         = element(aws_route_table.public.*.id, count.index)
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.ig.id
-  count                  = length(var.public_subnets_cidr)
-}
+# resource "aws_route" "public_internet_gateway" {
+#   route_table_id         = element(aws_route_table.public.*.id, count.index)
+#   destination_cidr_block = "0.0.0.0/0"
+#   gateway_id             = aws_internet_gateway.ig.id
+#   count                  = length(var.public_subnets_cidr)
+# }
 
 resource "aws_route_table_association" "public" {
   count          = length(var.public_subnets_cidr)
@@ -83,6 +88,16 @@ resource "aws_security_group" "external_access" {
     cidr_blocks = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+
+  ingress {
+    from_port     = 8
+    to_port       = 0
+    protocol      = "ICMP"
+    description   = "Allow Ping"
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
   tags = {
     Name        = "External Access"
     Environment = var.environment
