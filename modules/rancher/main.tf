@@ -15,7 +15,7 @@ resource "rancher2_cluster" "cluster" {
   rke_config {
     ingress {
       default_backend = false
-      provider = "nginx"
+      provider = "none"
     }
   }
 }
