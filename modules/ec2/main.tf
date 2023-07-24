@@ -80,7 +80,9 @@ module "rancher_common" {
   node_internal_ip            = aws_instance.server.private_ip
   node_username               = local.node_username
   ssh_private_key_pem         = tls_private_key.global_key.private_key_pem
-  rancher_server_dns          = var.domain #join(".", ["rancher", aws_instance.server.public_ip, "sslip.io"])
+  rancher_server_dns          = var.rancher_server_dns #join(".", ["rancher", aws_instance.server.public_ip, "sslip.io"])
+  nodes_dns                   = var.nodes_dns
+  domain                      = var.domain                   
   admin_password              = var.rancher_server_admin_password
   workload_cluster_name       = "curso"
 }

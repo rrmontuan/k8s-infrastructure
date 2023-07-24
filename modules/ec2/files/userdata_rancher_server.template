@@ -43,3 +43,7 @@ apt-get install -y kubectl
 cd /home/ubuntu
 mkdir -m 0740 .kube
 chown ubuntu:ubuntu .kube/ 
+
+cd /home/ubuntu
+mkdir -m 0740 k8s_files
+chown ubuntu:ubuntu k8s_files/ 

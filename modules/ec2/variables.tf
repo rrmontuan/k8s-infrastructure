@@ -35,7 +35,17 @@ variable "rancher_version" {
 # Required
 variable "domain" {
   type        = string
+  description = "DNS Domain"
+}
+
+variable "rancher_server_dns" {
+  type        = string
   description = "DNS host name of the Rancher server"
+}
+
+variable "nodes_dns" {
+  type        = string
+  description = "DNS host name of the cluster nodes"
 }
 
 variable "aws_route_table_association" {

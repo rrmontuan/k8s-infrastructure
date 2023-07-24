@@ -62,7 +62,9 @@ module "ec2" {
   cluster_nodes                       = local.workspace["cluster_nodes"]
   public_key                          = var.public_key 
   subnet                              = element(module.networking.subnets, 0)  
-  domain                              = module.dns.rancher_dns
+  rancher_server_dns                  = module.dns.rancher_dns
+  domain                              = var.domain
+  nodes_dns                           = module.dns.nodes_dns
   rancher_server_admin_password       = var.rancher_server_admin_password
   rancher_version                     = var.rancher_version
   aws_route_table_association         = element(module.networking.aws_route_table_association, 0)

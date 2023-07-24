@@ -30,6 +30,11 @@ variable "rancher_server_dns" {
   description = "DNS host name of the Rancher server"
 }
 
+variable "domain" {
+  type        = string
+  description = "DNS Domain"
+}
+
 # Required
 variable "admin_password" {
   type        = string
@@ -40,4 +45,9 @@ variable "admin_password" {
 variable "workload_cluster_name" {
   type        = string
   description = "Name for created custom workload cluster"
+}
+
+variable "nodes_dns" {
+  type        = string
+  description = "DNS host name of the cluster nodes"
 }
