@@ -43,13 +43,6 @@ resource "aws_route_table" "public" {
   }
 }
 
-# resource "aws_route" "public_internet_gateway" {
-#   route_table_id         = element(aws_route_table.public.*.id, count.index)
-#   destination_cidr_block = "0.0.0.0/0"
-#   gateway_id             = aws_internet_gateway.ig.id
-#   count                  = length(var.public_subnets_cidr)
-# }
-
 resource "aws_route_table_association" "public" {
   count          = length(var.public_subnets_cidr)
   subnet_id      = element(aws_subnet.public_subnet.*.id, count.index)
